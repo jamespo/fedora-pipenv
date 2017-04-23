@@ -29,10 +29,12 @@ your...
 Summary:        %{summary}
 %{?python_provide:%python_provide python2-%{pypi_name}}
 
+BuildRequires:  python2-pexpect
 Requires:       python-virtualenv
 Requires:       python-pew >= 0.1.26
 Requires:       python-pip
 Requires:       python-setuptools
+Requires:       python2-pexpect
 %description -n python2-%{pypi_name}
 Pipenv: Sacred Marriage of Pipfile, Pip, & Virtualenv **Pipenv** is an
 experimental project that aims to bring the best of all packaging worlds to the
@@ -45,10 +47,12 @@ your...
 Summary:        %{summary}
 %{?python_provide:%python_provide python3-%{pypi_name}}
 
+BuildRequires:  python3-pexpect
 Requires:       python3-virtualenv
 Requires:       python3-pew >= 0.1.26
 Requires:       python3-pip
 Requires:       python3-setuptools
+Requires:       python3-pexpect
 %description -n python3-%{pypi_name}
 Pipenv: Sacred Marriage of Pipfile, Pip, & Virtualenv **Pipenv** is an
 experimental project that aims to bring the best of all packaging worlds to the
@@ -67,16 +71,23 @@ rm -rf %{pypi_name}.egg-info
 %py2_build
 %py3_build
 
+# Unbundle packages under the vendor. We replace these with symlinks to system libs.
+rm -rf build/lib/pipenv/vendor/pexpect
+
 %install
 # Must do the subpackages' install first because the scripts in /usr/bin are
 # overwritten with every setup.py install.
 %py3_install
 cp %{buildroot}/%{_bindir}/pipenv %{buildroot}/%{_bindir}/pipenv-%{python3_version}
 ln -s %{_bindir}/pipenv-%{python3_version} %{buildroot}/%{_bindir}/pipenv-3
+ln -s ../../pexpect %{buildroot}/%{python3_sitelib}/pipenv/vendor/pexpect
 
 %py2_install
 cp %{buildroot}/%{_bindir}/pipenv %{buildroot}/%{_bindir}/pipenv-%{python2_version}
 ln -s %{_bindir}/pipenv-%{python2_version} %{buildroot}/%{_bindir}/pipenv-2
+ln -s ../../pexpect %{buildroot}/%{python2_sitelib}/pipenv/vendor/pexpect
+
+%check
 
 
 %files -n python2-%{pypi_name}

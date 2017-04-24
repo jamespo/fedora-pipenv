@@ -71,7 +71,7 @@ rm -rf %{pypi_name}.egg-info
 %py2_build
 %py3_build
 
-# Unbundle packages under the vendor. We replace these with symlinks to system libs.
+# Unbundle the packages under the vendor and use system bundled packages.
 rm -rf build/lib/pipenv/vendor/pexpect
 
 %install
@@ -80,12 +80,10 @@ rm -rf build/lib/pipenv/vendor/pexpect
 %py3_install
 cp %{buildroot}/%{_bindir}/pipenv %{buildroot}/%{_bindir}/pipenv-%{python3_version}
 ln -s %{_bindir}/pipenv-%{python3_version} %{buildroot}/%{_bindir}/pipenv-3
-ln -s ../../pexpect %{buildroot}/%{python3_sitelib}/pipenv/vendor/pexpect
 
 %py2_install
 cp %{buildroot}/%{_bindir}/pipenv %{buildroot}/%{_bindir}/pipenv-%{python2_version}
 ln -s %{_bindir}/pipenv-%{python2_version} %{buildroot}/%{_bindir}/pipenv-2
-ln -s ../../pexpect %{buildroot}/%{python2_sitelib}/pipenv/vendor/pexpect
 
 %check
 
